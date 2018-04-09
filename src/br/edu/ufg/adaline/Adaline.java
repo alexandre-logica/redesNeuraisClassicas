@@ -3,7 +3,7 @@ package br.edu.ufg.adaline;
 public class Adaline {
 
 	private static final double taxaAprendizagem = 0.1;
-	private static final int numeroMaximoEpocas = 10000;
+	private static final int numeroMaximoEpocas = 1000000;
 	private static final int numeroEntradas = 3;
 	private static final Double precisao = 0.0000001;
 
@@ -21,8 +21,8 @@ public class Adaline {
 	}
 
 	public void treinar() {
-		//treinarGD();
-		treinarSGD();
+		treinarGD();
+		//treinarSGD();
 	}
 	
 	public void treinarSGD() {
@@ -30,9 +30,9 @@ public class Adaline {
 		do {
 			eqmAnterior = calcularEQM();
 			for (int i = 0; i < amostras[0].length; i++) {
+				Double u = somaPonderadaPesos(i);
 				for (int j = 0; j < pesos.length; j++) {
-					Double u = pesos[j] * amostras[j][i];
-					pesos[j] = pesos[j] + taxaAprendizagem * (esperados[i] - u) * amostras[j][i]; 
+					pesos[j] = pesos[j] + (taxaAprendizagem * (esperados[i] - u)) * amostras[j][i]; 
 				}
 			}
 			epocas++;
@@ -57,12 +57,20 @@ public class Adaline {
 		System.out.println("\n Epocas: "+epocas);
 	}
 	
+	private Double somaPonderadaPesos(int i) {
+		Double u = 0d;
+		for (int j = 0; j < pesos.length; j++) {
+			u += pesos[j] * amostras[j][i];
+		}
+		return u;
+	}
+	
 	public Double calcularEQM() {
 		Double eqm = 0.0;
 		for (int i = 0; i < amostras[0].length; i++) {
+			Double u = somaPonderadaPesos(i);
 			for (int j = 0; j < pesos.length; j++) {
-				Double u = pesos[j] * amostras[j][i];
-				eqm = eqm + 0.5 * Math.pow((esperados[i] - u), 2);
+				eqm = eqm + Math.pow((esperados[i] - u), 2);
 			}
 		}
 		eqm = eqm / amostras[0].length;
@@ -72,7 +80,7 @@ public class Adaline {
 	public Double pesoPorEpoca(int j) {
 		Double eqm = 0.0;
 		for (int i = 0; i < amostras[0].length; i++) {
-			Double u = pesos[j] * amostras[j][i];
+			Double u = somaPonderadaPesos(i);
 			eqm = eqm + ((esperados[i] - u) * amostras[j][i]);
 		}
 		return eqm;
@@ -83,7 +91,6 @@ public class Adaline {
 		for (int i = 0; i < pesos.length; i++) {
 			u += pesos[i] * padrao[i];
 		}
-		//u = u-1;
 		Double sinalSaida = this.funcaoDeAtivacao(u);
 		System.out.println(sinalSaida+" | "+u);
 	}
@@ -91,7 +98,7 @@ public class Adaline {
 	private void atribuirValoresAleatoriosParaPesos() {
 		pesos = new Double[numeroEntradas];
 		for (int i = 0; i < pesos.length; i++) {
-			pesos[i] = Math.random() - Math.random();
+			pesos[i] = Math.random();
 			//pesos[i] = 0.0;
 		}
 		//Questão 21
@@ -101,7 +108,7 @@ public class Adaline {
 	}
 
 	private Double funcaoDeAtivacao(double u) {
-		return (u >= 1.0) ? 1.0 : 0.0;
+		return (u >= 0.5) ? 1.0 : 0.0;
 	}
 	
 	public int getEpocas() {
