@@ -34,17 +34,6 @@ public class RedeNeural {
 		System.out.println("\n Epocas: "+epocas);
 	}
 	
-	public void classificar(double[] entrada) {
-		if (epocas > Configuracao.NUMERO_MAXIMO_EPOCAS) {
-			System.out.println("Nao foi possivel atingir um ponto de convergencia, verifique os parametros e a estrutura da rede.");
-		} else {
-			double[] saidasPrimeiraCamada = getSaidaClassificacaoPrimeiraCamada(entrada);
-			double[] entradaSegundaCamada = getEntradasSegundaCamada(saidasPrimeiraCamada);
-			//double y = propagarSinalPelaSegundaCamada(entradaSegundaCamada);
-			//long value = Math.round(y);
-			//System.out.println(value);
-		}
-	}
 	private void aprender(double[] conjuntoTreinamento, double[]valoresEsperados, double[] saidasPrimeiraCamada, double[] saidasSegundaCamada) {
 		retropropagarErroPelaSegundaCamada(valoresEsperados, saidasPrimeiraCamada, saidasSegundaCamada);
 		retropropagarErroPelaPrimeiraCamada(conjuntoTreinamento, valoresEsperados, saidasPrimeiraCamada, saidasSegundaCamada);
@@ -87,18 +76,6 @@ public class RedeNeural {
 		return saidasPrimeiraCamada;
 	}
 
-	private double[] getSaidaClassificacaoPrimeiraCamada(double[] entrada) {
-		double[] saidasPrimeiraCamada = new double[nrNeuroniosPrimeiraCamada];
-		for (int j = 0; j < conexoesPrimeiraCamada.length; j++) {
-			double u = 0;
-			for (int k = 0; k < conexoesPrimeiraCamada[j].length; k++) {
-				u += entrada[k] * conexoesPrimeiraCamada[j][k];
-			}
-			saidasPrimeiraCamada[j] = getFuncaoTransferencia(u);
-		}
-		return saidasPrimeiraCamada;
-	}
-	
 	private void retropropagarErroPelaPrimeiraCamada(double[]x, double[] y, double[] h, double[] g) {
 		double gradiente[] = new double[g.length];
 		double w[][] = conexoesSegundaCamada;
@@ -125,10 +102,6 @@ public class RedeNeural {
 		}
 	}
 
-	private double getPrimeiraParcela(double valorEsperado, double valorSaida) {
-		return -(valorEsperado - valorSaida);
-	}
-
 	private double getFuncaoTransferencia(double u) {
 		return 1.0 / (1.0 + Math.exp(-u));
 	}
@@ -140,17 +113,6 @@ public class RedeNeural {
 
 	private void inicializarConexoesDaPrimeiraCamada() {
 		conexoesPrimeiraCamada = new double[nrNeuroniosEntrada][nrNeuroniosPrimeiraCamada + 1];
-/*		for (int i = 0; i < conexoesPrimeiraCamada.length; i++) {
-			for (int j = 0; j < conexoesPrimeiraCamada[i].length; j++) {
-				conexoesPrimeiraCamada[i][j] = Math.random();
-			}
-		}*/
-/*		conexoesPrimeiraCamada[0][0] = 0.000438568;
-		conexoesPrimeiraCamada[0][1] = 0.19956143;
-		conexoesPrimeiraCamada[0][2] = 0.35;
-		conexoesPrimeiraCamada[1][0] = 0.24975114;
-		conexoesPrimeiraCamada[1][1] = 0.29950229;
-		conexoesPrimeiraCamada[1][2] = 0.35;*/
 		conexoesPrimeiraCamada[0][0] = 0.15;
 		conexoesPrimeiraCamada[0][1] = 0.2;
 		conexoesPrimeiraCamada[0][2] = 0.35;
@@ -162,15 +124,6 @@ public class RedeNeural {
 	private void inicializarConexoesDaSegundaCamada() {
 		conexoesSegundaCamada = new double[nrNeuroniosEntrada][nrNeuroniosPrimeiraCamada + 1];
 		conexoesSegundaCamadaNovo = new double[nrNeuroniosEntrada][nrNeuroniosPrimeiraCamada + 1];
-/*		for (int i = 0; i < conexoesSegundaCamada.length; i++) {
-			conexoesSegundaCamada[i] = Math.random();
-		}*/
-/*		conexoesSegundaCamada[0][0] = 0.35891648;
-		conexoesSegundaCamada[0][1] = 0.408666186;
-		conexoesSegundaCamada[0][2] = 0.6;
-		conexoesSegundaCamada[1][0] = 0.511301270;
-		conexoesSegundaCamada[1][1] = 0.561370121;
-		conexoesSegundaCamada[1][2] = 0.6;*/
 		conexoesSegundaCamada[0][0] = 0.4;
 		conexoesSegundaCamada[0][1] = 0.45;
 		conexoesSegundaCamada[0][2] = 0.6;

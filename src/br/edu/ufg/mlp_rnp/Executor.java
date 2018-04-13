@@ -19,10 +19,6 @@ public class Executor {
 	
 	private static void imprimirTesteDeClassificacao(RedeNeural rede){
 		
-		rede.classificar(new double[] {0.0, 0.0, 1.0});
-		rede.classificar(new double[] {0.0, 1.0, 1.0});
-		rede.classificar(new double[] {1.0, 0.0, 1.0});
-		rede.classificar(new double[] {1.0, 1.0, 1.0});
 	}
 
 }
